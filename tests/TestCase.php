@@ -15,14 +15,14 @@ abstract class TestCase extends Orchestra\Testbench\TestCase
         $app['config']->set('view.paths', [__DIR__.'/views_temp']);
     }
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
         exec('rm -rf '.__DIR__.'/temp/*');
     }
 
-    public function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
 

@@ -11,35 +11,30 @@ class FindCommand extends Command
 {
     /**
      * The name and signature of the console command.
-     *
      * @var string
      */
     protected $signature = 'langman:find {keyword} {--package : Vendor Package name to search within.}';
 
     /**
      * The name and signature of the console command.
-     *
      * @var string
      */
     protected $description = 'Find key with values matching the keyword.';
 
     /**
      * The Languages manager instance.
-     *
      * @var \Themsaid\LangMan\Manager
      */
     private $manager;
 
     /**
      * Array of files grouped by filename.
-     *
      * @var array
      */
     protected $files;
 
     /**
      * ListCommand constructor.
-     *
      * @param \Themsaid\LangMan\Manager $manager
      * @return void
      */
@@ -52,7 +47,6 @@ class FindCommand extends Command
 
     /**
      * Execute the console command.
-     *
      * @return mixed
      */
     public function handle()
@@ -77,7 +71,6 @@ class FindCommand extends Command
 
     /**
      * The output of the table rows.
-     *
      * @return array
      */
     private function tableRows()
@@ -109,10 +102,14 @@ class FindCommand extends Command
             $original = [];
 
             foreach ($allLanguages as $languageKey) {
-                $original[$languageKey] =
-                    isset($values[$languageKey])
-                        ? $values[$languageKey]
-                        : isset($filesContent[$fileName][$languageKey][$key]) ? $filesContent[$fileName][$languageKey][$key] : '';
+
+                if (isset($values[$languageKey])) {
+                    $original[$languageKey] = $values[$languageKey];
+                } elseif (isset($filesContent[$fileName][$languageKey][$key])) {
+                    $original[$languageKey] = $filesContent[$fileName][$languageKey][$key];
+                } else {
+                    $original[$languageKey] = '';
+                }
             }
 
             // Sort the language values based on language name
