@@ -13,6 +13,15 @@
             <directory suffix=".php">./tests/</directory>
         </testsuite>
     </testsuites>
+    <source>
+        <include>
+            <directory suffix=".php">src</directory>
+        </include>
+        <exclude>
+            <file>tests/Kernel.php</file>
+            <file>tests/TestCase.php</file>
+        </exclude>
+    </source>
     <php>
         <env name="APP_KEY" value="AckfSECXIvnK5r28GVIWUAxmbBSjTsmF"/>
     </php>
