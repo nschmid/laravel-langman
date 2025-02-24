@@ -21,7 +21,7 @@ translation lines with ease. Taking care of a multilingual interface is not a he
 Begin by installing the package through Composer. Run the following command in your terminal:
 
 ```
-$ composer require justraviga/laravel-langman
+$ composer require nschmid/laravel-langman
 ```
 
 Once done, add the following line in your providers array of `config/app.php`:
