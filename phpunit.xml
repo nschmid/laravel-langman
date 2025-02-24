@@ -7,8 +7,7 @@
          processIsolation="false"
          stopOnFailure="false"
          cacheDirectory=".phpunit.cache"
-         failOnWarning="false"
-         convertWarningsToExceptions="false">
+         failOnWarning="false">
     <testsuites>
         <testsuite name="Langman Test Suite">
             <directory suffix=".php">./tests/</directory>
