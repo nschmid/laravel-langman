@@ -7,8 +7,14 @@ class ShowCommandTest extends TestCase
         $this->createTempFiles();
 
         $this->artisan('langman:show', ['key' => 'user']);
+        $expected = <<<EXPECTED
+Language file user.php not found!
++-----+
+| key |
++-----+\n
+EXPECTED;
 
-        $this->assertContains('Language file user.php not found!', $this->consoleOutput());
+        $this->assertEquals($expected, $this->consoleOutput());
     }
 
     public function testCommandOutputForFile()
@@ -20,9 +26,9 @@ class ShowCommandTest extends TestCase
 
         $this->artisan('langman:show', ['key' => 'user']);
 
-        $this->assertRegExp('/key(?:.*)en(?:.*)nl/', $this->consoleOutput());
-        $this->assertRegExp('/name(?:.*)Name(?:.*)Naam/', $this->consoleOutput());
-        $this->assertRegExp('/age(?:.*)Age(?:.*)|(?: *)|/', $this->consoleOutput());
+        $this->assertMatchesRegularExpression('/key(?:.*)en(?:.*)nl/', $this->consoleOutput());
+        $this->assertMatchesRegularExpression('/name(?:.*)Name(?:.*)Naam/', $this->consoleOutput());
+        $this->assertMatchesRegularExpression('/age(?:.*)Age(?:.*)|(?: *)|/', $this->consoleOutput());
     }
 
     public function testCommandOutputForFileAndSpecificLanguages()
@@ -35,10 +41,10 @@ class ShowCommandTest extends TestCase
 
         $this->artisan('langman:show', ['key' => 'user', '--lang' => 'en,nl']);
 
-        $this->assertRegExp('/key(?:.*)en(?:.*)nl/', $this->consoleOutput());
-        $this->assertRegExp('/name(?:.*)Name(?:.*)Naam/', $this->consoleOutput());
-        $this->assertNotContains('Nome', $this->consoleOutput());
-        $this->assertNotContains('it_lang', $this->consoleOutput());
+        $this->assertMatchesRegularExpression('/key(?:.*)en(?:.*)nl/', $this->consoleOutput());
+        $this->assertMatchesRegularExpression('/name(?:.*)Name(?:.*)Naam/', $this->consoleOutput());
+        $this->assertNotContains('Nome', [$this->consoleOutput()]);
+        $this->assertNotContains('it_lang', [$this->consoleOutput()]);
     }
 
     public function testCommandOutputForPackageFile()
@@ -51,8 +57,8 @@ class ShowCommandTest extends TestCase
 
         $this->artisan('langman:show', ['key' => 'package::file']);
 
-        $this->assertRegExp('/key(?:.*)en(?:.*)sp/', $this->consoleOutput());
-        $this->assertRegExp('/name(?:.*)name(?:.*)something/', $this->consoleOutput());
+        $this->assertMatchesRegularExpression('/key(?:.*)en(?:.*)sp/', $this->consoleOutput());
+        $this->assertMatchesRegularExpression('/name(?:.*)name(?:.*)something/', $this->consoleOutput());
     }
 
     public function testCommandOutputForFileWithNestedKeys()
@@ -64,9 +70,9 @@ class ShowCommandTest extends TestCase
 
         $this->artisan('langman:show', ['key' => 'user']);
 
-        $this->assertRegExp('/key(?:.*)en(?:.*)sp/', $this->consoleOutput());
-        $this->assertRegExp('/name.first(?:.*)first(?:.*)firstsp/', $this->consoleOutput());
-        $this->assertRegExp('/name.last(?:.*)last/', $this->consoleOutput());
+        $this->assertMatchesRegularExpression('/key(?:.*)en(?:.*)sp/', $this->consoleOutput());
+        $this->assertMatchesRegularExpression('/name.first(?:.*)first(?:.*)firstsp/', $this->consoleOutput());
+        $this->assertMatchesRegularExpression('/name.last(?:.*)last/', $this->consoleOutput());
     }
 
     public function testCommandOutputForKey()
@@ -78,10 +84,10 @@ class ShowCommandTest extends TestCase
 
         $this->artisan('langman:show', ['key' => 'user.name']);
 
-        $this->assertRegExp('/key(?:.*)en(?:.*)nl/', $this->consoleOutput());
-        $this->assertRegExp('/name(?:.*)Name(?:.*)Naam/', $this->consoleOutput());
-        $this->assertNotContains('age', $this->consoleOutput());
-        $this->assertNotContains('uname', $this->consoleOutput());
+        $this->assertMatchesRegularExpression('/key(?:.*)en(?:.*)nl/', $this->consoleOutput());
+        $this->assertMatchesRegularExpression('/name(?:.*)Name(?:.*)Naam/', $this->consoleOutput());
+        $this->assertNotContains('age', [$this->consoleOutput()]);
+        $this->assertNotContains('uname', [$this->consoleOutput()]);
     }
 
     public function testCommandOutputForNestedKey()
@@ -93,10 +99,10 @@ class ShowCommandTest extends TestCase
 
         $this->artisan('langman:show', ['key' => 'user.name.first']);
 
-        $this->assertRegExp('/key(?:.*)en(?:.*)nl/', $this->consoleOutput());
-        $this->assertRegExp('/name.first(?:.*)first(?:.*)firstnl/', $this->consoleOutput());
-        $this->assertNotContains('name.last', $this->consoleOutput());
-        $this->assertNotContains('age', $this->consoleOutput());
+        $this->assertMatchesRegularExpression('/key(?:.*)en(?:.*)nl/', $this->consoleOutput());
+        $this->assertMatchesRegularExpression('/name.first(?:.*)first(?:.*)firstnl/', $this->consoleOutput());
+        $this->assertNotContains('name.last', [$this->consoleOutput()]);
+        $this->assertNotContains('age', [$this->consoleOutput()]);
     }
 
     public function testCommandOutputForSearchingParentKey()
@@ -108,10 +114,10 @@ class ShowCommandTest extends TestCase
 
         $this->artisan('langman:show', ['key' => 'user.name']);
 
-        $this->assertRegExp('/key(?:.*)en(?:.*)nl/', $this->consoleOutput());
-        $this->assertRegExp('/name.first(?:.*)first(?:.*)firstnl/', $this->consoleOutput());
-        $this->assertRegExp('/name.last(?:.*)last(?:.*)lastnl/', $this->consoleOutput());
-        $this->assertNotContains('age', $this->consoleOutput());
+        $this->assertMatchesRegularExpression('/key(?:.*)en(?:.*)nl/', $this->consoleOutput());
+        $this->assertMatchesRegularExpression('/name.first(?:.*)first(?:.*)firstnl/', $this->consoleOutput());
+        $this->assertMatchesRegularExpression('/name.last(?:.*)last(?:.*)lastnl/', $this->consoleOutput());
+        $this->assertNotContains('age', [$this->consoleOutput()]);
     }
 
     public function testCommandOutputForKeyOnCloseMatch()
@@ -123,10 +129,10 @@ class ShowCommandTest extends TestCase
 
         $this->artisan('langman:show', ['key' => 'user.na', '-c' => null]);
 
-        $this->assertRegExp('/key(?:.*)en(?:.*)nl/', $this->consoleOutput());
-        $this->assertRegExp('/name(?:.*)Name(?:.*)Naam/', $this->consoleOutput());
-        $this->assertRegExp('/username(?:.*)uname(?:.*)|(?: *)|/', $this->consoleOutput());
-        $this->assertNotContains('age', $this->consoleOutput());
+        $this->assertMatchesRegularExpression('/key(?:.*)en(?:.*)nl/', $this->consoleOutput());
+        $this->assertMatchesRegularExpression('/name(?:.*)Name(?:.*)Naam/', $this->consoleOutput());
+        $this->assertMatchesRegularExpression('/username(?:.*)uname(?:.*)|(?: *)|/', $this->consoleOutput());
+        $this->assertNotContains('age', [$this->consoleOutput()]);
     }
 
     public function test_ignore_attributes_and_keys_with_empty_arrays()
@@ -137,7 +143,7 @@ class ShowCommandTest extends TestCase
         ]);
 
         $this->artisan('langman:show', ['key' => 'user']);
-        $this->assertRegExp('/key(?:.*)en(?:.*)nl/', $this->consoleOutput());
-        $this->assertRegExp('/name(?:.*)Name(?:.*)MISSING/', $this->consoleOutput());
+        $this->assertMatchesRegularExpression('/key(?:.*)en(?:.*)nl/', $this->consoleOutput());
+        $this->assertMatchesRegularExpression('/name(?:.*)Name(?:.*)MISSING/', $this->consoleOutput());
     }
 }

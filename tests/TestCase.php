@@ -55,20 +55,34 @@ abstract class TestCase extends Orchestra\Testbench\TestCase
 
     public function resolveApplicationConsoleKernel($app)
     {
+        // Updated to use dependency injection properly in Laravel 10
         $app->singleton('artisan', function ($app) {
-            return new \Illuminate\Console\Application($app, $app['events'], $app->version());
+            return new \Illuminate\Console\Application(
+                $app,
+                $app->make('events'),
+                $app->version()
+            );
         });
 
-        $app->singleton('Illuminate\Contracts\Console\Kernel', Kernel::class);
+        $app->singleton(\Illuminate\Contracts\Console\Kernel::class, Kernel::class);
     }
 
+    /**
+     * Run an Artisan console command by name.
+     *
+     * @param string $command
+     * @param array $parameters
+     * @return int
+     */
     public function artisan($command, $parameters = [])
     {
-        parent::artisan($command, array_merge($parameters, ['--no-interaction' => true]));
+        $this->withoutMockingConsoleOutput();
+        // Call the parent method with merged parameters
+        return parent::artisan($command, array_merge($parameters, ['--no-interaction' => true]));
     }
 
     public function consoleOutput()
     {
-        return $this->consoleOutput ?: $this->consoleOutput = $this->app[Kernel::class]->output();
+        return $this->consoleOutput ?: $this->consoleOutput = $this->app->make(Kernel::class)->output();
     }
 }

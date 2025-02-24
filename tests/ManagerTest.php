@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Filesystem\Filesystem;
 use Mockery as m;
 
@@ -105,11 +106,10 @@ class ManagerTest extends TestCase
         $this->assertContains('_content_', $manager->getFileContent($filePath));
     }
 
-    /**
-     * @expectedException Illuminate\Contracts\Filesystem\FileNotFoundException
-     */
     public function testGetFileContentThrowsExceptionIfNotFound()
     {
+        $this->expectException(FileNotFoundException::class);
+
         $manager = $this->app[\Themsaid\Langman\Manager::class];
 
         $this->createTempFiles();

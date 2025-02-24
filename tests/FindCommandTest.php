@@ -11,7 +11,8 @@ class FindCommandTest extends TestCase
 
         $this->artisan('langman:find', ['keyword' => 'ragnar']);
 
-        $this->assertContains('No language files were found!', $this->consoleOutput());
+        $expected = "No language files were found!\n+-----+\n| key |\n+-----+\n";
+        $this->assertEquals($expected, $this->consoleOutput());
     }
 
     public function testCommandOutputForFile()
@@ -24,10 +25,10 @@ class FindCommandTest extends TestCase
 
         $this->artisan('langman:find', ['keyword' => 'not found']);
 
-        $this->assertRegExp('/key(?:.*)en(?:.*)nl/', $this->consoleOutput());
-        $this->assertRegExp('/user\.not_found(?:.*)User NoT fOunD(?:.*)something/', $this->consoleOutput());
-        $this->assertNotContains('age', $this->consoleOutput());
-        $this->assertNotContains('else', $this->consoleOutput());
+        $this->assertMatchesRegularExpression('/key(?:.*)en(?:.*)nl/', $this->consoleOutput());
+        $this->assertMatchesRegularExpression('/user\.not_found(?:.*)User NoT fOunD(?:.*)something/', $this->consoleOutput());
+        $this->assertNotContains('age', [$this->consoleOutput()]);
+        $this->assertNotContains('else', [$this->consoleOutput()]);
     }
 
     public function testCommandOutputForFileWithNestedKeys()
@@ -39,9 +40,9 @@ class FindCommandTest extends TestCase
 
         $this->artisan('langman:find', ['keyword' => 'not found']);
 
-        $this->assertRegExp('/key(?:.*)en(?:.*)sp/', $this->consoleOutput());
-        $this->assertRegExp('/user\.missing\.not_found(?:.*)user not found(?:.*)sp/', $this->consoleOutput());
-        $this->assertNotContains('jarl_borg', $this->consoleOutput());
+        $this->assertMatchesRegularExpression('/key(?:.*)en(?:.*)sp/', $this->consoleOutput());
+        $this->assertMatchesRegularExpression('/user\.missing\.not_found(?:.*)user not found(?:.*)sp/', $this->consoleOutput());
+        $this->assertNotContains('jarl_borg', [$this->consoleOutput()]);
     }
 
     public function testCommandOutputForPackage()
@@ -54,8 +55,8 @@ class FindCommandTest extends TestCase
 
         $this->artisan('langman:find', ['keyword' => 'not found', '--package' => 'package']);
 
-        $this->assertRegExp('/key(?:.*)en(?:.*)sp/', $this->consoleOutput());
-        $this->assertRegExp('/package::file\.not_found(?:.*)file not found here(?:.*)something/', $this->consoleOutput());
-        $this->assertNotContains('weight', $this->consoleOutput());
+        $this->assertMatchesRegularExpression('/key(?:.*)en(?:.*)sp/', $this->consoleOutput());
+        $this->assertMatchesRegularExpression('/package::file\.not_found(?:.*)file not found here(?:.*)something/', $this->consoleOutput());
+        $this->assertNotContains('weight', [$this->consoleOutput()]);
     }
 }

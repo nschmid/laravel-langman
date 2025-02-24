@@ -22,13 +22,13 @@ class MissingCommandTest extends TestCase
         ]);
 
         $command = m::mock('\Themsaid\Langman\Commands\MissingCommand[ask]', [$manager]);
-        $command->shouldReceive('ask')->once()->with('/user\.age:nl/', null)->andReturn('fill_age');
-        $command->shouldReceive('ask')->once()->with('/product\.name:en/', null)->andReturn('fill_name');
-        $command->shouldReceive('ask')->once()->with('/product\.color:nl/', null)->andReturn('fill_color');
-        $command->shouldReceive('ask')->once()->with('/product\.size:nl/', null)->andReturn('fill_size');
-        $command->shouldReceive('ask')->once()->with('/missing\.missing\.id:nl/', null)->andReturn('fill_missing_id');
-        $command->shouldReceive('ask')->once()->with('/missing\.missing\.price:en/', null)->andReturn('fill_missing_price');
-        $command->shouldReceive('ask')->once()->with('/missing\.missing\.price:nl/', null)->andReturn('fill_missing_price');
+        $command->shouldReceive('ask')->once()->with('<fg=yellow>user.age:nl</> translation', null)->andReturn('fill_age');
+        $command->shouldReceive('ask')->once()->with('<fg=yellow>product.name:en</> translation', null)->andReturn('fill_name');
+        $command->shouldReceive('ask')->once()->with('<fg=yellow>product.color:nl</> translation', null)->andReturn('fill_color');
+        $command->shouldReceive('ask')->once()->with('<fg=yellow>product.size:nl</> translation', null)->andReturn('fill_size');
+        $command->shouldReceive('ask')->once()->with('<fg=yellow>missing.missing.id:nl</> translation', null)->andReturn('fill_missing_id');
+        $command->shouldReceive('ask')->once()->with('<fg=yellow>missing.missing.price:en</> translation', null)->andReturn('fill_missing_price');
+        $command->shouldReceive('ask')->once()->with('<fg=yellow>missing.missing.price:nl</> translation', null)->andReturn('fill_missing_price');
 
         $this->app['artisan']->add($command);
         $this->artisan('langman:missing');
@@ -64,8 +64,7 @@ class MissingCommandTest extends TestCase
         ]);
 
         $command = m::mock('\Themsaid\Langman\Commands\MissingCommand[ask]', [$manager]);
-        $command->shouldReceive('ask')->once()->with('/<fg=yellow>user\.age:nl<\/> translation/', '/en:Age/');
-
+        $command->shouldReceive('ask')->once()->with('<fg=yellow>user.age:nl</> translation', 'en:Age');
         $this->app['artisan']->add($command);
 
         $this->artisan('langman:missing', ['--default' => true]);
@@ -87,7 +86,7 @@ class MissingCommandTest extends TestCase
         ]);
 
         $command = m::mock('\Themsaid\Langman\Commands\MissingCommand[ask]', [$manager]);
-        $command->shouldReceive('ask')->once()->with('/<fg=yellow>user\.age:nl<\/> translation/', null);
+        $command->shouldReceive('ask')->once()->with('<fg=yellow>user.age:nl</> translation', null);
 
         $this->app['artisan']->add($command);
 
