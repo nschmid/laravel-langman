@@ -1,0 +1,36 @@
+name: Publish Package
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          coverage: none
+          tools: composer:v2
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-suggest
+
+      - name: Run tests
+        run: composer test
+
+      - name: Validate composer.json
+        run: composer validate --strict
+
+      # If you're using Packagist
+      - name: Notify Packagist
+        run: |
+          curl -XPOST -H'content-type:application/json' \
+          'https://packagist.org/api/update-package?username=${{ secrets.PACKAGIST_USERNAME }}&apiToken=${{ secrets.PACKAGIST_API_TOKEN }}' \
+          -d'{"repository":{"url":"https://github.com/${{ github.repository }}"}}'
